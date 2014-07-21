@@ -44,7 +44,11 @@ module Unbound
 
     def to_resolv
       if ap = answer_packet()
-        return Resolv::DNS::Message.decode(ap)
+        msg = Resolv::DNS::Message.decode(ap)
+        msg.secure    = self[:secure] == 1
+        msg.bogus     = self[:bogus] == 1
+        msg.why_bogus = self[:why_bogus]
+        return msg
       end
       return nil
     end

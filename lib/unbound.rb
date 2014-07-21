@@ -5,3 +5,5 @@ module Unbound
   require 'unbound/context'
   require 'unbound/resolver'
 end
+
+require 'unbound/resolv_ext'
