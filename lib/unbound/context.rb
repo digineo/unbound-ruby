@@ -35,6 +35,23 @@ module Unbound
       @ub_ctx.nil?
     end
 
+    %w(
+      debuglevel
+      set_fwd
+      resolvconf
+      hosts
+      add_ta
+      add_ta_file
+      data_add
+      data_remove
+      trustedkeys
+    ).each do |method|
+      define_method(method) do |val|
+        check_closed!
+        raise_if_error!(Unbound::Bindings.send "ub_ctx_#{method}", @ub_ctx, val)
+      end
+    end
+
     def load_config(filename)
       check_closed!
       raise_if_error!(Unbound::Bindings.ub_ctx_config(@ub_ctx, filename))
