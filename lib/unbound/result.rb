@@ -23,6 +23,7 @@ module Unbound
 
                :havedata, :int,  # int havedata
 
+               :nxdomain, :int,   # int nxdomain
                :secure, :int,     # int secure
 
                :bogus,  :int,       # int bogus
@@ -43,14 +44,17 @@ module Unbound
     end
 
     def to_resolv
-      if ap = answer_packet()
+      if self[:nxdomain] == 1
+        raise Resolv::DNS::Config::NXDomain.new(self[:qname])
+      elsif ap = answer_packet
         msg = Resolv::DNS::Message.decode(ap)
         msg.secure    = self[:secure] == 1
         msg.bogus     = self[:bogus] == 1
         msg.why_bogus = self[:why_bogus]
-        return msg
+        msg
+      else
+        nil
       end
-      return nil
     end
   end
 

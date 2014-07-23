@@ -92,6 +92,6 @@ module Unbound
     attach_function :ub_ctx_data_remove, [:ub_ctx_ptr, :string], :error_code
 
     ## This wasn't added until unbound 1.4.15
-    # attach_function :ub_version, [], :string
+    attach_function :ub_version, [], :string
   end
 end

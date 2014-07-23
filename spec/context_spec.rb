@@ -86,6 +86,12 @@ describe Unbound::Context do
         expect(answer[2].address.to_s).to eq("192.0.2.51")
       end
     end
+
+    describe 'non-existing zone' do
+      it "should raise NXDomain" do
+        expect{ @ctx.resolve("nox-existent.local", 1, 1) }.to raise_error(Resolv::DNS::Config::NXDomain)
+      end
+    end
   end
 
   shared_examples_for "an asynchronous name resolution method" do
