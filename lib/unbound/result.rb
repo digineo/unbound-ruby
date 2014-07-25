@@ -16,7 +16,7 @@ module Unbound
 
                :canonname, :string, # char* canonname
 
-               :rcode, :int, # int rcode
+               :rcode, Unbound::Bindings::RCode, # int rcode
 
                :answer_packet, :pointer, # void* answer_packet
                :answer_len, :int,        # int answer_len
@@ -37,23 +37,23 @@ module Unbound
     end
 
     def answer_packet
-      if self[:answer_len] <= 0
-        return nil
+      case self[:rcode]
+      when :noerror
+        self[:answer_packet].read_bytes(self[:answer_len]) if self[:answer_len] > 0
+      when :nxdomain
+        raise Resolv::DNS::Config::NXDomain.new(self[:qname])
+      else
+        raise ResultError, self[:rcode]
       end
-      self[:answer_packet].read_bytes(self[:answer_len])
     end
 
     def to_resolv
-      if self[:nxdomain] == 1
-        raise Resolv::DNS::Config::NXDomain.new(self[:qname])
-      elsif ap = answer_packet
+      if ap = answer_packet
         msg = Resolv::DNS::Message.decode(ap)
         msg.secure    = self[:secure] == 1
         msg.bogus     = self[:bogus] == 1
         msg.why_bogus = self[:why_bogus]
         msg
-      else
-        nil
       end
     end
   end

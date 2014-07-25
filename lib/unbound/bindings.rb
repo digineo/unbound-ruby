@@ -1,5 +1,4 @@
 require 'ffi'
-require 'unbound/result'
 module Unbound
   module Bindings
     extend FFI::Library
@@ -39,7 +38,22 @@ module Unbound
         # /** error async_id does not exist or result already been delivered */
         :noid , -10
     ]
+
+    RCode = enum(
+        :noerror,
+        :formerr,
+        :servfail,
+        :nxdomain,
+        :notimpl,
+        :refused,
+        :yxdomain,
+        :yxrrset,
+        :nxrrset,
+        :notauth,
+        :notzone
+    )
       
+    require 'unbound/result'
     
 
     typedef :pointer, :mydata

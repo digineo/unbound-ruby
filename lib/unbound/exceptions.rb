@@ -15,6 +15,10 @@ module Unbound
     end
   end
 
+  # Indicates that a result is erroneous
+  class ResultError < Error
+  end
+
   # Indicates that an API call was attempted, but no context was provided.
   class MissingContextError < Error
   end
