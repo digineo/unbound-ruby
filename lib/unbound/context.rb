@@ -114,6 +114,7 @@ module Unbound
       begin
         Unbound::Result.new(ptr).to_resolv
       ensure
+        result_ptr.free
         Unbound::Bindings.ub_resolve_free ptr
       end
     end
